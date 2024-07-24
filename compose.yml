@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api-gateway
+    container_name: api-gateway
+    ports:
+      - "3000:3000"
+    command: ["node", "apps/api-gateway/dist/main.js"]
+    depends_on:
+      - users-service
+      - orders-service
+      - listings-service
+      - deliveries-service
+
+  users-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: users-service
+    container_name: users-service
+    ports:
+      - "3004:3000"
+    command: ["node", "apps/users-service/dist/main.js"]
+
+  orders-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: orders-service
+    container_name: orders-service
+    ports:
+      - "3003:3000"
+    command: ["node", "apps/orders-service/dist/main.js"]
+
+  listings-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: listings-service
+    container_name: listings-service
+    ports:
+      - "3002:3000"
+    command: ["node", "apps/listings-service/dist/main.js"]
+
+  deliveries-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: deliveries-service
+    container_name: deliveries-service
+    ports:
+      - "3003:3000"
+    command: ["node", "apps/deliveries-service/dist/main.js"]
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"

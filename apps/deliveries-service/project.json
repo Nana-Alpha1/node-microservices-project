@@ -1,0 +1,24 @@
+{
+  "name": "deliveries-service",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/deliveries-service/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "deliveries-service:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "deliveries-service:build:development"
+        },
+        "production": {
+          "buildTarget": "deliveries-service:build:production"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "listings-service",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/listings-service/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "listings-service:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "listings-service:build:development"
+        },
+        "production": {
+          "buildTarget": "listings-service:build:production"
+        }
+      }
+    }
+  }
+}

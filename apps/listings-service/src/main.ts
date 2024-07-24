@@ -11,10 +11,10 @@ const app = express();
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 app.get('/api', (req, res) => {
-  res.send({ message: 'Welcome to api-gateway!' });
+  res.send({ message: 'Welcome to listings-service!' });
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3002;
 const server = app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}/api`);
 });
