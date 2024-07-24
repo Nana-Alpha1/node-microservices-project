@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   api-gateway:
     build:
@@ -9,7 +11,12 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-    command: ["node dist/apps/api-gateway/main.js"]
+      - DATABASE_URL=postgres://postgres:password@api-gateway-db:5432/api_gateway_db
+      - RABBITMQ_URL=amqp://rabbitmq
+    command: ["npx", "nodemon", "dist/apps/api-gateway/main.js"]
+    depends_on:
+      - rabbitmq
+      - api-gateway-db
 
   deliveries-service:
     build:
@@ -21,7 +28,12 @@ services:
       - "3001:3001"
     environment:
       - NODE_ENV=production
-    command: ["node dist/apps/deliveries-service/main.js"]
+      - DATABASE_URL=postgres://postgres:password@deliveries-service-db:5432/deliveries_service_db
+      - RABBITMQ_URL=amqp://rabbitmq
+    command: ["npx", "nodemon", "dist/apps/deliveries-service/main.js"]
+    depends_on:
+      - rabbitmq
+      - deliveries-service-db
 
   listings-service:
     build:
@@ -33,7 +45,12 @@ services:
       - "3002:3002"
     environment:
       - NODE_ENV=production
-    command: ["node dist/apps/listings-service/main.js"]
+      - DATABASE_URL=postgres://postgres:password@listings-service-db:5432/listings_service_db
+      - RABBITMQ_URL=amqp://rabbitmq
+    command: ["npx", "nodemon", "dist/apps/listings-service/main.js"]
+    depends_on:
+      - rabbitmq
+      - listings-service-db
 
   orders-service:
     build:
@@ -45,7 +62,12 @@ services:
       - "3003:3003"
     environment:
       - NODE_ENV=production
-    command: ["node dist/apps/orders-service/main.js"]
+      - DATABASE_URL=postgres://postgres:password@orders-service-db:5432/orders_service_db
+      - RABBITMQ_URL=amqp://rabbitmq
+    command: ["npx", "nodemon", "dist/apps/orders-service/main.js"]
+    depends_on:
+      - rabbitmq
+      - orders-service-db
 
   users-service:
     build:
@@ -57,4 +79,67 @@ services:
       - "3004:3004"
     environment:
       - NODE_ENV=production
-    command: ["node dist/apps/users-service/main.js"]
+      - DATABASE_URL=postgres://postgres:password@users-service-db:5432/users_service_db
+      - RABBITMQ_URL=amqp://rabbitmq
+    command: ["npx", "nodemon", "dist/apps/users-service/main.js"]
+    depends_on:
+      - rabbitmq
+      - users-service-db
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  api-gateway-db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: api_gateway_db
+    volumes:
+      - api-gateway-db-data:/var/lib/postgresql/data
+
+  deliveries-service-db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: deliveries_service_db
+    volumes:
+      - deliveries-service-db-data:/var/lib/postgresql/data
+
+  listings-service-db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: listings_service_db
+    volumes:
+      - listings-service-db-data:/var/lib/postgresql/data
+
+  orders-service-db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: orders_service_db
+    volumes:
+      - orders-service-db-data:/var/lib/postgresql/data
+
+  users-service-db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users_service_db
+    volumes:
+      - users-service-db-data:/var/lib/postgresql/data
+
+volumes:
+  api-gateway-db-data:
+  deliveries-service-db-data:
+  listings-service-db-data:
+  orders-service-db-data:
+  users-service-db-data:
