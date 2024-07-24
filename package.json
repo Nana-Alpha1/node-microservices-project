@@ -2,7 +2,9 @@
   "name": "@node-microservices/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "build": "npx tsc"
+  },
   "private": true,
   "dependencies": {
     "@prisma/client": "^5.17.0",

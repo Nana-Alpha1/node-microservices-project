@@ -1,64 +1,60 @@
-version: '3.8'
-
 services:
   api-gateway:
     build:
       context: .
       dockerfile: Dockerfile
-      target: api-gateway
-    container_name: api-gateway
+      args:
+        APP_NAME: api-gateway
     ports:
       - "3000:3000"
-    command: ["node", "apps/api-gateway/dist/main.js"]
-    depends_on:
-      - users-service
-      - orders-service
-      - listings-service
-      - deliveries-service
-
-  users-service:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: users-service
-    container_name: users-service
-    ports:
-      - "3004:3000"
-    command: ["node", "apps/users-service/dist/main.js"]
-
-  orders-service:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: orders-service
-    container_name: orders-service
-    ports:
-      - "3003:3000"
-    command: ["node", "apps/orders-service/dist/main.js"]
-
-  listings-service:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: listings-service
-    container_name: listings-service
-    ports:
-      - "3002:3000"
-    command: ["node", "apps/listings-service/dist/main.js"]
+    environment:
+      - NODE_ENV=production
+    command: ["node dist/apps/api-gateway/main.js"]
 
   deliveries-service:
     build:
       context: .
       dockerfile: Dockerfile
-      target: deliveries-service
-    container_name: deliveries-service
+      args:
+        APP_NAME: deliveries-service
     ports:
-      - "3003:3000"
-    command: ["node", "apps/deliveries-service/dist/main.js"]
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+    command: ["node dist/apps/deliveries-service/main.js"]
 
-  rabbitmq:
-    image: rabbitmq:management
-    container_name: rabbitmq
+  listings-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: listings-service
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+    command: ["node dist/apps/listings-service/main.js"]
+
+  orders-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: orders-service
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=production
+    command: ["node dist/apps/orders-service/main.js"]
+
+  users-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: users-service
+    ports:
+      - "3004:3004"
+    environment:
+      - NODE_ENV=production
+    command: ["node dist/apps/users-service/main.js"]
