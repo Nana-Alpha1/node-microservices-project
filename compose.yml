@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   api-gateway:
     build:
@@ -14,6 +12,9 @@ services:
       - DATABASE_URL=postgres://postgres:password@api-gateway-db:5432/api_gateway_db
       - RABBITMQ_URL=amqp://rabbitmq
     command: ["npx", "nodemon", "dist/apps/api-gateway/main.js"]
+    volumes:
+      - ./node_modules:/usr/src/app/node_modules
+      - ./apps/api-gateway:/usr/src/app/apps/api-gateway
     depends_on:
       - rabbitmq
       - api-gateway-db
@@ -25,12 +26,15 @@ services:
       args:
         APP_NAME: deliveries-service
     ports:
-      - "3001:3001"
+      - "4000:4000"
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgres://postgres:password@deliveries-service-db:5432/deliveries_service_db
       - RABBITMQ_URL=amqp://rabbitmq
     command: ["npx", "nodemon", "dist/apps/deliveries-service/main.js"]
+    volumes:
+      - ./node_modules:/usr/src/app/node_modules
+      - ./apps/deliveries-service:/usr/src/app/apps/deliveries-service
     depends_on:
       - rabbitmq
       - deliveries-service-db
@@ -42,12 +46,15 @@ services:
       args:
         APP_NAME: listings-service
     ports:
-      - "3002:3002"
+      - "5000:5000"
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgres://postgres:password@listings-service-db:5432/listings_service_db
       - RABBITMQ_URL=amqp://rabbitmq
     command: ["npx", "nodemon", "dist/apps/listings-service/main.js"]
+    volumes:
+      - ./node_modules:/usr/src/app/node_modules
+      - ./apps/listings-service:/usr/src/app/apps/listings-service
     depends_on:
       - rabbitmq
       - listings-service-db
@@ -59,12 +66,15 @@ services:
       args:
         APP_NAME: orders-service
     ports:
-      - "3003:3003"
+      - "6000:6000"
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgres://postgres:password@orders-service-db:5432/orders_service_db
       - RABBITMQ_URL=amqp://rabbitmq
     command: ["npx", "nodemon", "dist/apps/orders-service/main.js"]
+    volumes:
+      - ./node_modules:/usr/src/app/node_modules
+      - ./apps/orders-service:/usr/src/app/apps/orders-service
     depends_on:
       - rabbitmq
       - orders-service-db
@@ -76,21 +86,21 @@ services:
       args:
         APP_NAME: users-service
     ports:
-      - "3004:3004"
+      - "7000:7000"
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgres://postgres:password@users-service-db:5432/users_service_db
       - RABBITMQ_URL=amqp://rabbitmq
     command: ["npx", "nodemon", "dist/apps/users-service/main.js"]
+    volumes:
+      - ./node_modules:/usr/src/app/node_modules
+      - ./apps/users-service:/usr/src/app/apps/users-service
     depends_on:
       - rabbitmq
       - users-service-db
 
   rabbitmq:
     image: rabbitmq:3-management
-    ports:
-      - "5672:5672"
-      - "15672:15672"
 
   api-gateway-db:
     image: postgres:alpine

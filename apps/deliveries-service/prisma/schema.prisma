@@ -20,7 +20,8 @@ model User {
   password String
   firstName String
   lastName String
-  role Role
+  phoneNumber String @unique
+  role Role 
 }
 
 enum Role{

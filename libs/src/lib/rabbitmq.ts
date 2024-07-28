@@ -1,3 +1,5 @@
+// libs/rabbitmq-client/src/lib/rabbitMQClient.ts
+
 import * as amqplib from 'amqplib';
 import { Channel, Connection } from 'amqplib';
 
@@ -6,8 +8,20 @@ class RabbitMQClient {
   private channel: Channel | null = null;
 
   async connect(url: string) {
-    this.connection = await amqplib.connect(url);
-    this.channel = await this.connection.createChannel();
+    let retries = 5;
+    while (retries) {
+      try {
+        this.connection = await amqplib.connect(url);
+        this.channel = await this.connection.createChannel();
+        console.log('Connected to RabbitMQ');
+        return;
+      } catch (err) {
+        console.error('Failed to connect to RabbitMQ, retrying in 5 seconds...', err);
+        retries -= 1;
+        if (retries === 0) throw err;
+        await new Promise(res => setTimeout(res, 5000));
+      }
+    }
   }
 
   async publish(queue: string, message: string) {
